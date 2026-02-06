@@ -104,6 +104,16 @@ z-index:999;
 font-size:18px;
 }
 
+#skipBtn{
+background:transparent;
+color:#aaa;
+font-size:14px;
+}
+
+#skipBtn:hover{
+color:white;
+}
+
 </style>
 </head>
 
@@ -122,6 +132,7 @@ font-size:18px;
 <h2 id="text"></h2>
 
 <button id="nextBtn">Next ❤️</button>
+<button id="skipBtn">Skip ⏭</button>
 
 <div id="finalButtons" class="hidden">
 <button class="yes" onclick="yesClick()">Yes ❤️</button>
@@ -308,6 +319,8 @@ document.getElementById("bg").style.backgroundImage=`url(img${proposalImage}.jpg
 
 document.getElementById("nextBtn").classList.add("hidden");
 document.getElementById("finalButtons").classList.remove("hidden");
+document.getElementById("skipBtn").classList.add("hidden");
+
 
 }
 
@@ -354,6 +367,17 @@ noIndex=(noIndex+1)%noFlow.length;
 
 let size=parseFloat(window.getComputedStyle(yesBtn).fontSize);
 yesBtn.style.fontSize=(size*1.4)+"px";
+
+}
+  
+document.getElementById("skipBtn").onclick = skipStory;
+
+function skipStory(){
+
+document.getElementById("music").play();
+
+step = story.length; 
+showFinal();
 
 }
 
