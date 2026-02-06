@@ -65,7 +65,7 @@ max-width:420px;
 max-height:90vh;
 }
 
-/* Apple Zoom Animation */
+/* Images */
 
 img{
 width:100%;
@@ -74,28 +74,11 @@ object-fit:contain;
 border-radius:20px;
 box-shadow:0 20px 40px rgba(0,0,0,0.4);
 background:black;
-
-animation:zoomSlow 8s ease-in-out forwards;
-transition:opacity 0.8s ease;
-}
-
-@keyframes zoomSlow{
-from{transform:scale(1);}
-to{transform:scale(1.08);}
-}
-
-.fadeOut{
-opacity:0;
-}
-
-.fadeIn{
-opacity:1;
 }
 
 h2{
 margin-top:15px;
 min-height:70px;
-transition:opacity 0.6s ease;
 }
 
 button{
@@ -149,8 +132,7 @@ font-size:18px;
 
 <script>
 
-
-/* Floating Hearts Background */
+/* Floating Hearts */
 
 setInterval(()=>{
 const heart=document.createElement("div");
@@ -174,9 +156,10 @@ document.body.appendChild(heart);
 setTimeout(()=>heart.remove(),400);
 });
 
-/* Typing System */
+/* Typing Fix (Overlap Protection) */
 
 let typingInterval;
+let isTyping=false;
 
 function typeText(text){
 
@@ -188,6 +171,7 @@ clearInterval(typingInterval);
 
 let i=0;
 el.innerHTML="";
+isTyping=true;
 
 typingInterval=setInterval(()=>{
 el.innerHTML+=text.charAt(i);
@@ -195,6 +179,7 @@ i++;
 
 if(i>=text.length){
 clearInterval(typingInterval);
+isTyping=false;
 }
 
 },35);
@@ -202,7 +187,7 @@ clearInterval(typingInterval);
 
 /* STORY SCRIPT */
 
-const story=[
+const story = [
 
 "Hi Betu… ❤️",
 
@@ -260,34 +245,25 @@ const proposalText="Betu… will you be my Valentine… again? ❤️❤️";
 
 let step=0;
 
-function changeImage(imageNumber){
+function updateScreen(){
 
-const img=document.getElementById("image");
+const imageNumber=step+1;
 
-img.classList.add("fadeOut");
-
-setTimeout(()=>{
-img.src=`img${imageNumber}.jpg`;
+document.getElementById("image").src=`img${imageNumber}.jpg`;
 document.getElementById("bg").style.backgroundImage=`url(img${imageNumber}.jpg)`;
 
-img.classList.remove("fadeOut");
-
-},400);
-
-}
-
-function updateScreen(){
-changeImage(step+1);
 typeText(story[step]);
+
 }
 
 updateScreen();
 
-/* NEXT BUTTON ONLY */
+function next(){
 
-document.getElementById("nextBtn").onclick=nextSlide;
-
-function nextSlide(){
+if(isTyping){
+typeText(story[step]); 
+return;
+}
 
 document.getElementById("music").play();
 
@@ -295,16 +271,23 @@ step++;
 
 if(step<story.length){
 updateScreen();
-}else{
+}
+else{
 showFinal();
 }
 
 }
 
+document.getElementById("nextBtn").onclick=next;
+
 function showFinal(){
 
+const proposalImage=story.length+1;
+
 typeText(proposalText);
-changeImage(story.length+1);
+
+document.getElementById("image").src=`img${proposalImage}.jpg`;
+document.getElementById("bg").style.backgroundImage=`url(img${proposalImage}.jpg)`;
 
 document.getElementById("nextBtn").classList.add("hidden");
 document.getElementById("finalButtons").classList.remove("hidden");
@@ -315,13 +298,16 @@ document.getElementById("finalButtons").classList.remove("hidden");
 
 function yesClick(){
 
-changeImage(story.length+2);
+const finalYesImage=story.length+2;
+
+document.getElementById("image").src=`img${finalYesImage}.jpg`;
+document.getElementById("bg").style.backgroundImage=`url(img${finalYesImage}.jpg)`;
 
 document.getElementById("finalButtons").classList.add("hidden");
 
 confetti({
-particleCount:200,
-spread:110,
+particleCount:180,
+spread:100,
 origin:{y:0.6}
 });
 
@@ -350,7 +336,6 @@ let size=parseFloat(window.getComputedStyle(yesBtn).fontSize);
 yesBtn.style.fontSize=(size*1.4)+"px";
 
 }
-
 
 </script>
 </body>
