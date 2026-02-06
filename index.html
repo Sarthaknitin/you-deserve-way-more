@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Rishita ❤️</title>
@@ -11,68 +12,80 @@
 
 body{
 margin:0;
-font-family: Arial, sans-serif;
-background: linear-gradient(135deg,#ff9a9e,#fad0c4);
-text-align:center;
+font-family:-apple-system, BlinkMacSystemFont, sans-serif;
 overflow:hidden;
 color:white;
-padding:20px;
+background:black;
+cursor:none;
 }
 
-.container{
-max-width:400px;
-margin:auto;
+/* ---------- Background Parallax ---------- */
+
+.bg{
+position:fixed;
+width:110%;
+height:110%;
+top:-5%;
+left:-5%;
+background-size:cover;
+background-position:center;
+filter:blur(20px);
+z-index:-1;
+transition:1s ease;
 }
+
+/* ---------- Container ---------- */
+
+.container{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+width:90%;
+max-width:420px;
+}
+
+/* ---------- Main Image ---------- */
 
 img{
 width:100%;
-max-height:400px;
-object-fit:cover;
 border-radius:20px;
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
+box-shadow:0 20px 40px rgba(0,0,0,0.4);
+transition:1s ease;
 }
 
+/* ---------- Text ---------- */
+
 h2{
-margin-top:20px;
+margin-top:25px;
+min-height:80px;
 }
+
+/* ---------- Buttons ---------- */
 
 button{
 padding:12px 25px;
-font-size:18px;
-margin:10px;
+margin:12px;
 border:none;
 border-radius:12px;
+font-size:18px;
 cursor:pointer;
 transition:0.3s;
 }
 
-.yes-button{
-background:#ff3366;
-color:white;
-}
+.yes{ background:#ff2d55; color:white;}
+.no{ background:white; color:black;}
 
-.no-button{
-background:#eeeeee;
-color:black;
-}
+.hidden{ display:none; }
 
-.hidden{
-display:none;
-}
+/* ---------- Custom Cursor Hearts ---------- */
 
-/* Floating Hearts */
-
-.heart{
+.cursor{
 position:fixed;
-bottom:-50px;
-font-size:24px;
-animation:float 6s linear infinite;
-opacity:0.7;
-}
-
-@keyframes float{
-0%{transform:translateY(0);}
-100%{transform:translateY(-110vh);}
+font-size:18px;
+pointer-events:none;
+z-index:999;
 }
 
 </style>
@@ -80,8 +93,10 @@ opacity:0.7;
 
 <body>
 
-<audio id="bgMusic" autoplay loop>
-<source src="music.mp3" type="audio/mpeg">
+<div class="bg" id="bg"></div>
+
+<audio id="music" loop>
+<source src="music.mp3">
 </audio>
 
 <div class="container">
@@ -90,139 +105,192 @@ opacity:0.7;
 
 <h2 id="text"></h2>
 
-<button id="nextBtn" onclick="nextScreen()">Next ❤️</button>
+<button id="nextBtn">Tap ❤️</button>
 
 <div id="finalButtons" class="hidden">
-<button class="yes-button" onclick="handleYes()">Yes ❤️</button>
-<button class="no-button" onclick="handleNo()">No 😢</button>
+<button class="yes" onclick="yesClick()">Yes ❤️</button>
+<button class="no" onclick="noClick()">No 😢</button>
 </div>
 
 </div>
 
 <script>
 
-/* ---------- Floating Hearts ---------- */
+/* ---------- Cursor Hearts ---------- */
 
-function createHeart(){
+document.addEventListener("mousemove",(e)=>{
 const heart=document.createElement("div");
-heart.className="heart";
 heart.innerHTML="❤️";
-heart.style.left=Math.random()*100+"vw";
-heart.style.fontSize=(20+Math.random()*30)+"px";
-heart.style.animationDuration=(4+Math.random()*3)+"s";
+heart.className="cursor";
+heart.style.left=e.pageX+"px";
+heart.style.top=e.pageY+"px";
 document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),500);
+});
 
-setTimeout(()=>heart.remove(),6000);
+
+/* ---------- Typing Effect ---------- */
+
+function typeText(text){
+
+let i=0;
+const el=document.getElementById("text");
+el.innerHTML="";
+
+let interval=setInterval(()=>{
+el.innerHTML += text[i];
+i++;
+if(i>=text.length) clearInterval(interval);
+},40);
+
 }
-setInterval(createHeart,500);
 
 
-
-/* ---------- Story Flow ---------- */
+/* ---------- Story Content ---------- */
 
 let step=0;
 
-const texts=[
-"Hi Rishita… I don’t know how to start this properly… But I wanted to say this in a special way.",
-"You know… life becomes better when certain people come into it… And you are one of those people for me.",
-"I love talking to you… I love your vibe… You make normal days special.",
-"Since Valentine’s week is coming… I wanted to ask you properly…"
+const story=[
+"Hi Rishita…",
+"I don’t know the perfect way to say this…",
+"But life honestly became softer after you entered it…",
+"You make my normal days feel special…",
+"And since Valentine’s week is coming…"
 ];
 
-const images=["img1.jpg","img2.jpg","img3.jpg","img4.jpg"];
+const images=[
+"img1.jpg","img2.jpg","img3.jpg","img4.jpg","img5.jpg"
+];
 
-document.getElementById("text").innerText=texts[0];
+function updateScreen(){
 
-function nextScreen(){
+document.getElementById("image").src=images[step];
+document.getElementById("bg").style.backgroundImage=`url(${images[step]})`;
+typeText(story[step]);
+
+}
+
+
+/* ---------- Auto Slideshow ---------- */
+
+let autoMode=false;
+
+function next(){
+
+document.getElementById("music").play();
 
 step++;
 
-if(step < texts.length){
-document.getElementById("text").innerText=texts[step];
-document.getElementById("image").src=images[step];
+if(step < story.length){
+updateScreen();
 }
 else{
-showFinal();
+finalScreen();
+}
+
+if(autoMode){
+setTimeout(next,4500);
 }
 
 }
 
+document.getElementById("nextBtn").onclick=next;
 
 
-function showFinal(){
-document.getElementById("text").innerText=
-"Rishita… Will you be my Valentine? ❤️";
+/* ---------- Final Screen ---------- */
 
-document.getElementById("image").src="img5.jpg";
+function finalScreen(){
+
+typeText("Rishita… Will you be my Valentine? ❤️");
+document.getElementById("image").src="img6.jpg";
+document.getElementById("bg").style.backgroundImage=`url(img6.jpg)`;
 
 document.getElementById("nextBtn").classList.add("hidden");
 document.getElementById("finalButtons").classList.remove("hidden");
-}
 
+}
 
 
 /* ---------- NO FLOW ---------- */
 
-let noIndex=0;
-
-const noMessages=[
-"Please don’t do this 🥺",
+let noMsgs=[
+"Please don't do this 🥺",
 "I will be very sad 😭",
 "Think again…",
-"Last chance madam 😤❤️"
+"Last chance madam ❤️"
 ];
 
-function handleNo(){
+let noIndex=0;
 
-const noBtn=document.querySelector(".no-button");
-const yesBtn=document.querySelector(".yes-button");
+function noClick(){
 
-noBtn.innerText=noMessages[noIndex];
-noIndex=(noIndex+1)%noMessages.length;
+const noBtn=document.querySelector(".no");
+const yesBtn=document.querySelector(".yes");
+
+noBtn.innerText=noMsgs[noIndex];
+noIndex=(noIndex+1)%noMsgs.length;
 
 let size=parseFloat(window.getComputedStyle(yesBtn).fontSize);
-yesBtn.style.fontSize=(size*1.3)+"px";
-}
+yesBtn.style.fontSize=(size*1.4)+"px";
 
+}
 
 
 /* ---------- YES FLOW ---------- */
 
 let yesStep=0;
 
-function handleYes(){
+function yesClick(){
 
-if(yesStep===0){
-document.getElementById("text").innerText=
-"Hey why are you clicking No?? 😜 Click Yes properly!";
+if(yesStep==0){
+typeText("Hey why clicking No 😜 Click Yes properly!");
 yesStep++;
 return;
 }
 
-if(yesStep===1){
-document.getElementById("text").innerText=
-"Are you really sure?? Think once again 😏";
+if(yesStep==1){
+typeText("Are you really sure? Think once again ❤️");
 yesStep++;
 return;
 }
 
-if(yesStep===2){
+if(yesStep==2){
 
-document.getElementById("text").innerText=
-"Thank you sooo much ❤️ You just made me the happiest person!";
+typeText("Thank you soooo much ❤️ You made me happiest person!");
 
-document.getElementById("image").src="img6.jpg";
+document.getElementById("image").src="img7.jpg";
+document.getElementById("bg").style.backgroundImage=`url(img7.jpg)`;
 document.getElementById("finalButtons").classList.add("hidden");
 
 confetti({
-particleCount:150,
-spread:90,
+particleCount:180,
+spread:100,
 origin:{y:0.6}
 });
 
 }
 
 }
+
+
+/* ---------- Hidden Easter Egg ---------- */
+
+let secret=0;
+
+document.body.addEventListener("dblclick",()=>{
+
+secret++;
+
+if(secret==3){
+alert("You found secret message ❤️ I really like you more than you think.");
+}
+
+});
+
+
+/* ---------- Initial Load ---------- */
+
+updateScreen();
 
 </script>
 
