@@ -156,7 +156,7 @@ document.body.appendChild(heart);
 setTimeout(()=>heart.remove(),400);
 });
 
-/* Typing Fix (Overlap Protection) */
+/* Typing Protection */
 
 let typingInterval;
 let isTyping=false;
@@ -241,6 +241,24 @@ const story = [
 
 const proposalText="Betu… will you be my Valentine… again? ❤️❤️";
 
+/* YES FLOW */
+
+const yesFlow=[
+"Arey ruko ruko… No click karne ka to nahi soch rahi thi?? 😑😂",
+"Pakka hai na? Baad me bolna mat 'maine pressure me ha bola' 😤",
+"OMG THANK YOU BABY ❤️ I love you soooo much!!!",
+"East or west… my baby is the best 😌❤️ I know you love me more than I can ever imagine"
+];
+
+/* NO FLOW */
+
+const noFlow=[
+"Arey please Betu…",
+"Itna bhi bura nahi hu main 😭",
+"Ek baar aur soch lo…",
+"Last chance please ❤️"
+];
+
 /* Story Flow */
 
 let step=0;
@@ -261,7 +279,7 @@ updateScreen();
 function next(){
 
 if(isTyping){
-typeText(story[step]); 
+typeText(story[step]);
 return;
 }
 
@@ -271,8 +289,7 @@ step++;
 
 if(step<story.length){
 updateScreen();
-}
-else{
+}else{
 showFinal();
 }
 
@@ -294,11 +311,21 @@ document.getElementById("finalButtons").classList.remove("hidden");
 
 }
 
-/* YES FLOW */
+/* YES CLICK */
+
+let yesStep=0;
 
 function yesClick(){
 
-const finalYesImage=story.length+2;
+if(yesStep < yesFlow.length - 1){
+typeText(yesFlow[yesStep]);
+yesStep++;
+return;
+}
+
+typeText(yesFlow[yesFlow.length - 1]);
+
+const finalYesImage = story.length + 2;
 
 document.getElementById("image").src=`img${finalYesImage}.jpg`;
 document.getElementById("bg").style.backgroundImage=`url(img${finalYesImage}.jpg)`;
@@ -313,16 +340,9 @@ origin:{y:0.6}
 
 }
 
-/* NO FLOW */
+/* NO CLICK */
 
 let noIndex=0;
-
-const noFlow=[
-"Arey please Betu…",
-"Itna bhi bura nahi hu main 😭",
-"Ek baar aur soch lo…",
-"Last chance please ❤️"
-];
 
 function noClick(){
 
