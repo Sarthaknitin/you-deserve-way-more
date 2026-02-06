@@ -19,6 +19,8 @@ overflow:hidden;
 cursor:none;
 }
 
+/* Background Blur */
+
 .bg{
 position:fixed;
 width:110%;
@@ -32,6 +34,8 @@ z-index:-1;
 transition:1s ease;
 }
 
+/* Layout */
+
 .container{
 position:absolute;
 top:50%;
@@ -39,22 +43,22 @@ left:50%;
 transform:translate(-50%,-50%);
 display:flex;
 flex-direction:column;
-justify-content:center;
 align-items:center;
 width:90%;
 max-width:420px;
 max-height:90vh;
 }
 
+/* Images */
 
 img{
 width:100%;
-max-height:45vh;
-object-fit:cover;
+max-height:40vh;
+object-fit:contain;
 border-radius:20px;
 box-shadow:0 20px 40px rgba(0,0,0,0.4);
+background:black;
 }
-
 
 h2{
 margin-top:15px;
@@ -70,11 +74,12 @@ font-size:16px;
 cursor:pointer;
 }
 
-
 .yes{ background:#ff2d55; color:white;}
 .no{ background:white; color:black;}
 
 .hidden{display:none;}
+
+/* Cursor Hearts */
 
 .cursor{
 position:fixed;
@@ -111,7 +116,7 @@ font-size:18px;
 
 <script>
 
-/* Cursor Hearts */
+/* Heart Cursor */
 
 document.addEventListener("mousemove",(e)=>{
 const heart=document.createElement("div");
@@ -123,23 +128,36 @@ document.body.appendChild(heart);
 setTimeout(()=>heart.remove(),400);
 });
 
-/* Typing Effect */
+/* Typing Fix */
+
+let typingInterval;
 
 function typeText(text){
-let i=0;
+
 const el=document.getElementById("text");
+
+if(typingInterval){
+clearInterval(typingInterval);
+}
+
+let i=0;
 el.innerHTML="";
 
-const interval=setInterval(()=>{
-el.innerHTML += text.charAt(i);
+typingInterval=setInterval(()=>{
+el.innerHTML+=text.charAt(i);
 i++;
-if(i >= text.length) clearInterval(interval);
+
+if(i>=text.length){
+clearInterval(typingInterval);
+}
+
 },35);
+
 }
 
 /* STORY SCRIPT */
 
-const story = [
+const story=[
 
 "Hi Betu… ❤️",
 
@@ -191,16 +209,16 @@ const story = [
 
 ];
 
-const proposalText = "Betu… will you be my Valentine… again? ❤️❤️";
+const proposalText="Betu… will you be my Valentine… again? ❤️❤️";
 
-const yesFlow = [
+const yesFlow=[
 "Arey ruko ruko… No click karne ka plan to nahi tha?? 😑😂",
 "Pakka hai na? Baad me bolna mat 'pressure me ha bola' 😤",
 "OMG THANK YOU BABY ❤️ I love you sooo much!!!",
 "East or west… my baby is the best 😌❤️"
 ];
 
-const noFlow = [
+const noFlow=[
 "Arey please Betu…",
 "Itna bhi bura nahi hu main 😭",
 "Ek baar aur soch lo…",
@@ -213,12 +231,13 @@ let step=0;
 
 function updateScreen(){
 
-const imageNumber = step + 1;
+const imageNumber=step+1;
 
-document.getElementById("image").src = `img${imageNumber}.jpg`;
-document.getElementById("bg").style.backgroundImage = `url(img${imageNumber}.jpg)`;
+document.getElementById("image").src=`img${imageNumber}.jpg`;
+document.getElementById("bg").style.backgroundImage=`url(img${imageNumber}.jpg)`;
 
 typeText(story[step]);
+
 }
 
 updateScreen();
@@ -229,7 +248,7 @@ document.getElementById("music").play();
 
 step++;
 
-if(step < story.length){
+if(step<story.length){
 updateScreen();
 }
 else{
@@ -242,12 +261,12 @@ document.getElementById("nextBtn").onclick=next;
 
 function showFinal(){
 
-const proposalImage = story.length + 1;
+const proposalImage=story.length+1;
 
 typeText(proposalText);
 
-document.getElementById("image").src = `img${proposalImage}.jpg`;
-document.getElementById("bg").style.backgroundImage = `url(img${proposalImage}.jpg)`;
+document.getElementById("image").src=`img${proposalImage}.jpg`;
+document.getElementById("bg").style.backgroundImage=`url(img${proposalImage}.jpg)`;
 
 document.getElementById("nextBtn").classList.add("hidden");
 document.getElementById("finalButtons").classList.remove("hidden");
@@ -260,18 +279,18 @@ let yesStep=0;
 
 function yesClick(){
 
-if(yesStep < yesFlow.length - 1){
+if(yesStep<yesFlow.length-1){
 typeText(yesFlow[yesStep]);
 yesStep++;
 return;
 }
 
-typeText(yesFlow[yesFlow.length - 1]);
+typeText(yesFlow[yesFlow.length-1]);
 
-const finalYesImage = story.length + 2;
+const finalYesImage=story.length+2;
 
-document.getElementById("image").src = `img${finalYesImage}.jpg`;
-document.getElementById("bg").style.backgroundImage = `url(img${finalYesImage}.jpg)`;
+document.getElementById("image").src=`img${finalYesImage}.jpg`;
+document.getElementById("bg").style.backgroundImage=`url(img${finalYesImage}.jpg)`;
 
 document.getElementById("finalButtons").classList.add("hidden");
 
@@ -280,6 +299,7 @@ particleCount:180,
 spread:100,
 origin:{y:0.6}
 });
+
 }
 
 /* NO FLOW */
